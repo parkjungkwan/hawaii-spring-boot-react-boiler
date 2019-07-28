@@ -76,6 +76,7 @@ class Header extends Component{
       localStorage.removeItem('name');
       localStorage.removeItem('grade');
       localStorage.removeItem('introduce');
+      localStorage.removeItem('fileUrl');
       this.setState({
         auth : false
       })
@@ -104,15 +105,38 @@ class Header extends Component{
             alert('ERROR');
         }) 
     }
+    //게시판더미데이터
+    const dummyDataB = () =>{
+      const headers = {
+        'Content-Type'  : 'application/json',
+        'Authorization' : 'JWT fefege..'
+      }
+      const data = {
+        data : 's'
+    }
+    // alert("회원가입 버튼 클릭"+data.name);
+    // alert(values.name);
+    // alert(values.email);
+    // alert(values.pwd);
+    axios.post(`http://localhost:9000/board/dummyData`, JSON.stringify(data),
+    {headers : headers})
+        .then(res=>{
+            alert(`${res.data.result}`);
+
+        })
+        .catch(e=>{
+            alert('ERROR');
+        }) 
+    }
     return(
       <Router>   
         <div className = {classes.root}>
-            <FormGroup>
+            {/* <FormGroup>
               <FormControlLabel
                 control = {<Switch checked = {auth} onChange = {handleChange} aria-label = "LoginSwitch" />}
                 label   = {auth ? 'Login' : 'Logout'}
               />
-            </FormGroup>
+            </FormGroup> */}
             <AppBar position = "static" color = "default">
               <Toolbar>
                 {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu">
@@ -126,6 +150,7 @@ class Header extends Component{
                   (
                     <div>
                       <Button color = "primary" onClick = {dummyData}>회원 더미데이터 생성</Button>
+                      <Button color = "primary" onClick = {dummyDataB}>게시판 더미데이터 생성</Button>
                       <Button color = "inherit">
                       <Link to = "/boardList">Board</Link>
                       </Button>
@@ -136,9 +161,9 @@ class Header extends Component{
                       <Link to = "/memberList">멤버리스트</Link>
                       </Button>)} 
                        */}
-                      <Button color = "inherit">
+                      {/* <Button color = "inherit">
                       <Link to = "/exchange">환율</Link>
-                      </Button>
+                      </Button> */}
                       <Button color = "inherit">
                       {/* <Link to = "/gMap">구글맵</Link> */}
                       <Link to = "/gMap2">구글맵</Link>
@@ -149,6 +174,7 @@ class Header extends Component{
                   (
                     <div>
                       <Button color = "primary" onClick = {dummyData}>회원 더미데이터 생성</Button>
+                      <Button color = "primary" onClick = {dummyDataB}>게시판 더미데이터 생성</Button>
                       {/* <Button>ddd</Button> */}
                       <Login/>
                       {/* <Button color = "inherit" onClick = {handleOpen}>Login</Button> */}

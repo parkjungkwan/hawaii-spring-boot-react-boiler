@@ -1,5 +1,5 @@
 import React from 'react';
-import {makeStyles, Grid, Typography, Paper,Button} from '@material-ui/core';
+import {makeStyles, Grid, Typography, Paper,Button,Avatar} from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import clsx from 'clsx';
@@ -30,13 +30,24 @@ const useStyles = makeStyles(theme => ({
   menu: {
     width: 200,
   },
+  avatar : {
+    margin : 10,
+  },
+  bigAvatar : {
+    margin : 10,
+    width  : 80,
+    height : 80,
+  },
 }));
 
 export default function MypageUpdate() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     name: localStorage.getItem('name'),
-    introduce : localStorage.getItem('introduce')
+    introduce : localStorage.getItem('introduce'),
+    file:'',
+    imagePreviewUrl: '',
+    storeFileUrl : localStorage.getItem('fileUrl')
   });
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
@@ -44,6 +55,9 @@ export default function MypageUpdate() {
   //수정버튼 클릭
   const modiInfo = e => {
     e.preventDefault();
+    
+
+    //수정저장
     const headers = {
         'Content-Type'  : 'application/json',
         'Authorization' : 'JWT fefege..'
@@ -52,7 +66,8 @@ export default function MypageUpdate() {
         email        : localStorage.getItem('email'),
         name         : values.name,
         introduce    : values.introduce,
-        pwd          : localStorage.getItem('pwd')
+        pwd          : localStorage.getItem('pwd'),
+        fileUrl      : values.storeFileUrl
     }
     // alert(data.name)
     // alert(data.introduce)
@@ -63,6 +78,8 @@ export default function MypageUpdate() {
                 alert(`${res.data.result}`);
                 localStorage.setItem('name',data.name);
                 localStorage.setItem('introduce',data.introduce);
+                localStorage.setItem('fileUrl',data.fileUrl);
+                console.log(localStorage.getItem('fileUrl'))
                 history.push('/mypage');
                 window.location.reload();
             })
@@ -102,16 +119,93 @@ export default function MypageUpdate() {
     window.location.reload();
   }
 
+  
+  //파일선택(이미지프리뷰)
+  const _handleImageChange=(e)=> {
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      setValues({ ...values, file: file, 
+        imagePreviewUrl : reader.result
+      });
+      
+    }
+
+    reader.readAsDataURL(file)
+  }
+
+  //이미지 업로드 클릭
+  const _handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: do something with -> this.state.file
+    console.log('handle uploading-', values.file);
+    
+    var frm = new FormData();
+    frm.append("photo", values.file);
+    console.log(frm)
+    //경로에 파일저장
+    axios.post('http://localhost:9000/member/uploadProfileImg', frm,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(res => {
+      var strArray = res.data.result.split()
+      //state에 받아온 경로저장
+      setValues({ ...values, storeFileUrl: res.data.result});
+      alert(`${res.data.result}`);
+    })
+    .catch(e => {
+     
+      alert('ERROR');
+    })
+
+    console.log(values.storeFileUrl)
+  
+  }
+
+
+  
+  // let $imagePreview = null;
+  // if (values.imagePreviewUrl) {
+  //   $imagePreview = (<img src={values.imagePreviewUrl} />);
+  // } else {
+  //   $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+  // }
+  const imageSrc = '/static/images/avatar/'+localStorage.getItem('fileUrl')
   return (
     <Router> 
     <div>
         {localStorage.getItem('email') == null && <Redirect/>}
         {localStorage.getItem('email') == 'null' && <Redirect/>}
-        마페수정
+        
         <br/>
       <Grid container justify = "center" alignItems = "center">
       <Paper className = {classes.root}>
-      <ImageAvatars/>
+      <Grid container justify = "center" alignItems = "center">
+        {/* <Avatar alt = "Remy Sharp" src = "/static/images/avatar/jk.jpg" className = {classes.bigAvatar} /> */}
+        <Avatar alt = "Remy Sharp" src = {values.imagePreviewUrl==''?imageSrc:values.imagePreviewUrl} className = {classes.bigAvatar} />
+      </Grid>
+      {/* 이미지업로드 */}
+      <Grid container justify = "center" alignItems = "center">
+        <div className="previewComponent">
+          <form onSubmit={(e)=>_handleSubmit(e)}>
+            <input className="fileInput" 
+              type="file" 
+              onChange={(e)=>_handleImageChange(e)} />
+            <button className="submitButton" 
+              type="submit" 
+              onClick={(e)=>_handleSubmit(e)}>Upload Image</button>
+          </form>
+          {/* <div className="imgPreview">
+            {$imagePreview}
+          </div> */}
+        </div>
+      </Grid>
+
       <form className={classes.container} noValidate autoComplete="off">
         {/* <Typography variant = "h6" component = "h3">
         {localStorage.getItem('name')}
@@ -134,7 +228,7 @@ export default function MypageUpdate() {
         />
         <TextField
         id="outlined-full-width"
-        label="Label"
+        label="자기소개를 입력하세요"
         style={{ margin: 8 }}
         placeholder="Placeholder"
         value={values.introduce}

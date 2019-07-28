@@ -1,46 +1,63 @@
 import React,{Component} from 'react';
-
+import {Table, Row} from 'react-bootstrap'
+import {Container} from '@material-ui/core';
 class Exchange extends Component{
     constructor(props) {
         super(props);
         this.state = {
           // country   : '',
           // kftc_bkpr : ''
-          arr : ['AAA'],
+          
           cons: []
         }
         this.key = 0;
       }
       callApi = () => {
-        fetch("/site/program/financial/exchangeJSON?authkey=lh4eJnm6eYZjI0fVzsBHLx5iDB9eWRJr&searchdate=20190718&data=AP01")
+        let d = new Date();
+        let month = d.getMonth()+1
+        //월이 한자릿수면 앞에 0을 붙임
+        if(month<10){
+          month = "0"+(d.getMonth()+1)
+        }
+        //일이 한자릿수면 앞에 0을 붙임
+        let date = d.getDate();
+        if(date<10){
+          date = "0"+d.getDate();
+        }
+        let today = d.getFullYear()+''+month+''+date;
+        //월요일 이른시간일경우 금요일로세팅
+        if(d.getDay() == 1 && d.getHours() < 12){
+          today = d.getFullYear()+''+month+''+(d.getDate()-3);
+        }
+        //주말엔 안나와서 금요일로 세팅
+        switch (d.getDay()) {
+          case 0:
+            //일요일일 경우
+            today = d.getFullYear()+''+month+''+(d.getDate()-2);
+            break;
+          case 6:
+              //토요일일경우
+              today = d.getFullYear()+''+month+''+(d.getDate()-1);
+            break;  
+        }
+        // alert(today)
+        fetch("/site/program/financial/exchangeJSON?authkey=lh4eJnm6eYZjI0fVzsBHLx5iDB9eWRJr&searchdate="+today+"&data=AP01")
           .then(res => res.json())
           .then(res => {
 
             let countryMap = []
             
             for (let i = 0; i < res.length; i++){
-              // 객체형으로 넣으면 안된다.
-              //푸시로 넣으면 안됨 수정하기.......
-              countryMap.push({code:res[i].cur_unit, desc:res[i].cur_nm});
+              countryMap.push({code:res[i].cur_unit, desc:res[i].cur_nm, rate:res[i].kftc_deal_bas_r});
             }
 
-            console.log("--------------------------------------------------")
-            console.log(countryMap)
-            console.log("--------------------------------------------------")
-         
             this.setState({
-              arr: ['BBB'],
+              
               cons:countryMap
             })
             
             console.log(this.state)
-            // this.setState({
-            //   // country   : json.cur_nm,
-            //   // kftc_bkpr : json.kftc_bkpr
-            //   arr : {
-            //     country : json.cur_nm
-            //   }
-            // })
+            
           })
       }
       componentDidMount() {
@@ -48,11 +65,11 @@ class Exchange extends Component{
       }
     render(){
 
-      const {arr, cons} = this.state;
+      const { cons} = this.state;
 
 
       console.log("---------------");
-      console.log(arr);
+     
       console.log(cons);
       console.log("---------------");
 
@@ -67,21 +84,21 @@ class Exchange extends Component{
  
         return(
             <div>
-                <h3>
-                    {/* dddd {arr} */}
-                    {/* {arr.length === 0 ? arr : '데이터 불러오는 중'} */}
-                </h3>
-                               
-                <table>
-                  <tbody>
+                <Container maxWidth="sm">
+                  <h5>환율</h5>
+                <Table striped bordered hover size="sm" >
+                <thead>
                   <tr>
                     <th>화폐명</th>
+                    <th>국가명</th> 
                     <th>화폐/원</th> 
                   </tr>
-                  {cons.map( (value, idx) => <tr><td>{value.code}</td><td>{value.desc}</td></tr> )}
-
-                  </tbody>
-                </table> 
+                </thead>
+                <tbody>
+                  {cons.map( (value, idx) => <tr><td>{value.code}</td><td>{value.desc}</td><td>{value.rate}</td></tr> )}
+                </tbody>
+                </Table> 
+                </Container>
             </div>
         );
     }

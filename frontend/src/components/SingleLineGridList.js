@@ -2,16 +2,16 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
-
+import history from '../history'
 const images = [
   {
     url   : '/static/images/main/hawai.jpg',
-    title : '베스트 여행기',
+    title : '구글맵',
     width : '50%',
   },
   {
     url   : '/static/images/main/taiwan.png',
-    title : '신간 여행기',
+    title : '여행기',
     width : '50%',
   },
  
@@ -92,15 +92,33 @@ const useStyles = makeStyles(theme => ({
 
 export default function SingleLineGridList() {
   const classes = useStyles();
-
+  const mainPageClick = e => {
+    alert(e.target.innerHTML);
+    if(e.target.innerHTML=='구글맵<span class="makeStyles-imageMarked-251"></span>'||
+    e.target.innerHTML=='<span class="MuiTypography-root makeStyles-imageTitle-234 MuiTypography-subtitle1 MuiTypography-colorInherit">구글맵<span class="makeStyles-imageMarked-235"></span></span>'
+    ){
+      // 마이페이지로 이동
+      history.push('/gMap2');
+      window.location.reload();
+    }else{
+      //보드로 이동
+      history.push('/boardList');
+      window.location.reload();
+    }
+    
+    
+  }
   return (
     <div className = {classes.root}>
       {images.map(image => (
         <ButtonBase
+          
           focusRipple
           key       = {image.title}
           className = {classes.image}
           focusVisibleClassName = {classes.focusVisible}
+          value =  {image.title}
+          onClick = {mainPageClick}
           style = {{
             width: image.width,
           }}

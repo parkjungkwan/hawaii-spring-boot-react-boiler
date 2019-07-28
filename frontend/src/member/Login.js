@@ -79,7 +79,8 @@ const login = e => {
             localStorage.setItem('pwd',`${res.data.pwd}`);
             localStorage.setItem('name',`${res.data.name}`);
             localStorage.setItem('grade',`${res.data.grade}`);
-            localStorage.setItem('introduce',res.data.introduce!=='null'?res.data.introduce:'');
+            localStorage.setItem('introduce',res.data.introduce!==null?res.data.introduce:'');
+            localStorage.setItem('fileUrl',res.data.fileUrl!==null?res.data.fileUrl:'');
             // alert(localStorage.getItem('id'));
             // console.log(localStorage.getItem('id'));
             // console.log(localStorage.getItem('email'));

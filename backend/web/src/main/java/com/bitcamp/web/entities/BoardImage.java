@@ -32,6 +32,7 @@ public class BoardImage implements Serializable{
     @Column(name = "photoSize")      private String photoSize;
     @Column(name = "originFilename") private String originFilename;
     @Column(name = "storedFilename") private String storedFilename;
+    @Column(name = "fileUrl")        private String fileUrl;
 
     @Override
     public String toString(){

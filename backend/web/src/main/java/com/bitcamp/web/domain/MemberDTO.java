@@ -15,7 +15,7 @@ public class MemberDTO {
                     ,grade        
                     ,introduce
                     ,regDate
-                    ,photoSize
+                    ,fileUrl
                     ,originFilename
                     ,storedFilename;   
 }

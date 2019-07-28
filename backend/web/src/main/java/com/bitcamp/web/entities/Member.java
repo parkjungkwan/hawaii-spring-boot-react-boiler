@@ -47,9 +47,8 @@ public class Member implements Serializable{
     @Column(name = "grade", nullable=false)          private String grade;    
     @Column(name = "introduce")      private String introduce;
     @Temporal(TemporalType.DATE)     private Date regDate;
-    @Column(name = "photoSize")      private String photoSize;
-    @Column(name = "originFilename") private String originFilename;
-    @Column(name = "storedFilename") private String storedFilename; 
+    @Column(name = "fileUrl") private String fileUrl;
+    
 
     // @CreationTimestamp
     // @Column(name = "signup_date", nullable = false)
@@ -58,23 +57,20 @@ public class Member implements Serializable{
     @Override
     public String toString(){
         return  "Member :[id:"+id+",name:" +name+", email:"+email+", password:"+pwd+", grade:"+grade+
-                ", introduce:"+introduce+", regDate:"+regDate+", photoSize:"+photoSize+", originFilename:"+originFilename+
-                ", storedFilename:"+storedFilename+"]";
+                ", introduce:"+introduce+", regDate:"+regDate+", fileUrl:"+fileUrl+"]";
     }
 
     @Builder
     private Member( String name,        String email,
                     String pwd,         String grade,     String introduce,
-                    Date regDate,     String photoSize, String originFilename,
-                    String storedFilename){
+                    Date regDate,     String fileUrl){
         this.name           = name;
         this.email          = email;
         this.pwd            = pwd;
         this.grade          = grade;
         this.introduce      = introduce;
         this.regDate        = regDate;
-        this.photoSize      = photoSize;
-        this.originFilename = originFilename;
-        this.storedFilename = storedFilename;
+        this.fileUrl        = fileUrl;
+        
     }
 }

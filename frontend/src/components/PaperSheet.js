@@ -1,5 +1,5 @@
 import React from 'react';
-import {makeStyles, Grid, Typography, Paper,Button} from '@material-ui/core';
+import {makeStyles, Grid, Typography, Paper,Button,Avatar} from '@material-ui/core';
 import ImageAvatars from '../components/ImageAvatars';
 import MypageUpdate from '../member/MypageUpdate';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -11,6 +11,14 @@ const useStyles = makeStyles(theme => ({
   root : {
     padding : theme.spacing(3, 3),
   },
+  avatar : {
+    margin : 10,
+  },
+  bigAvatar : {
+    margin : 10,
+    width  : 80,
+    height : 80,
+  },
 }));
 
 export default function PaperSheet() {
@@ -19,13 +27,16 @@ export default function PaperSheet() {
     history.push('/mypageUpdate');
     window.location.reload();
   }
-
+  const imageSrc = '/static/images/avatar/'+localStorage.getItem('fileUrl')
+  console.log(imageSrc)
   return (
     <Router>  
       <div>
         <Grid container justify = "center" alignItems = "center">
         <Paper className = {classes.root}>
-        <ImageAvatars/>
+        <Grid container justify = "center" alignItems = "center">
+          <Avatar alt = "Remy Sharp" src = {imageSrc} className = {classes.bigAvatar} />
+        </Grid>
         <Typography variant = "h7" component = "h4">
           {localStorage.getItem('email')}
           </Typography>

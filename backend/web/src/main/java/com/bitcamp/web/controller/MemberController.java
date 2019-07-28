@@ -1,5 +1,6 @@
 package com.bitcamp.web.controller;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,12 +10,15 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 
 import com.bitcamp.web.common.lambda.ISupplier;
 import com.bitcamp.web.domain.MemberDTO;
 import com.bitcamp.web.entities.Member;
 import com.bitcamp.web.repositories.MemberRepository;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +33,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 /**
  * MemberController
  */
@@ -114,7 +120,7 @@ public class MemberController {
      @PostMapping("/updateMypage")
      public HashMap<String,String>	updateMypage(@RequestBody MemberDTO dto){
          System.out.println("=========================MemberController.updateMypage()");
-         System.out.println("넘어온 소개"+dto.getIntroduce()+"   넘어온 이메일"+dto.getEmail()+"   넘어온 닉네임"+dto.getName());
+         System.out.println("넘어온 소개"+dto.getIntroduce()+"   넘어온 이메일"+dto.getEmail()+"   넘어온 닉네임"+dto.getName()+"   파일경로"+dto.getFileUrl());
          //dto를 엔티티로 바꿈
          //바뀌기 전 원래거를 찾아오는것
          Member entity = repo.findByEmail(dto.getEmail()).orElseThrow(EntityNotFoundException::new);
@@ -123,7 +129,7 @@ public class MemberController {
          entity.setName(dto.getName());
          entity.setPwd(dto.getPwd());
          entity.setIntroduce(dto.getIntroduce());
-        
+         entity.setFileUrl(dto.getFileUrl());
          //저장
          repo.save(entity); 
          
@@ -131,6 +137,38 @@ public class MemberController {
          map.put("result","수정성공");
          return map;   
      }
+     //프로필 이미지 업로드
+     @PostMapping("/uploadProfileImg")
+     public HashMap<String,String>	uploadProfileImg(@RequestParam("photo") MultipartFile image) throws Exception{
+        System.out.println("=========================MemberController.updateMypage()");
+        System.out.println("넘어온이미지 객채"+image);
+        System.out.println("넘어온이미지 객채"+image.getOriginalFilename());
+        //프로필 이미지 업로드
+        String sourceFileName = image.getOriginalFilename(); 
+        String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase(); 
+        File destinationFile; 
+        String destinationFileName;
+        //상대경로 구하기
+        String path = System.getProperty("user.dir").substring(0, System.getProperty("user.dir").length()-7);
+        //필요한 경로로 잘라서 만들기
+        
+        String fileUrl = path+"frontend/public/static/images/avatar/";
+
+        do { 
+            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension; 
+            destinationFile = new File(fileUrl + destinationFileName); 
+        } while (destinationFile.exists()); 
+        
+        destinationFile.getParentFile().mkdirs(); 
+        image.transferTo(destinationFile); 
+        
+        HashMap<String,String> map = new HashMap<>();
+        //경로를 맵에 집어넣음
+        
+        map.put("result",destinationFileName);
+        return map;   
+     }
+
      //회원탈퇴
     @DeleteMapping("{id}")
     public HashMap<String,Object>	deleteById(@PathVariable String id){
@@ -158,16 +196,6 @@ public class MemberController {
      @GetMapping("/memberList/{nowPage}/{search}")
      public Page<Member> findAll(@PathVariable String nowPage, @PathVariable String search){
          System.out.println("=========================MemberController.findAll()");
-         //페이지처리 안된코드
-        //  Iterable<Member> entities = repo.findAll();
-        //  List<MemberDTO> list      = new ArrayList<>();
-         
-        //  for(Member m: entities){
-        //      MemberDTO mem = modelMapper.map(m, MemberDTO.class);
-        //      list.add(mem);
-        //  }
-        //  System.out.println(list);
-        //  return list;
         System.out.println("현재페이지 받아온 값 : "+nowPage);
         System.out.println("검색 받아온 값 : "+search);
         //페이지처리

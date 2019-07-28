@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -34,7 +35,7 @@ public class BoardController {
     //카운트(테스트 : 성공)
     @GetMapping("/count")
     public long count(){
-        System.out.println("=========================MemberController.count()");  
+        System.out.println("=========================BoardController.count()");  
         ISupplier fx = ()->{
             return repo.count();            
         };
@@ -44,7 +45,7 @@ public class BoardController {
     //글작성
     @PostMapping("")
     public HashMap<String,String> save(@RequestBody BoardDTO dto){
-        System.out.println("=========================MemberController.save()");
+        System.out.println("=========================BoardController.save()");
         HashMap<String,String> map = new HashMap<>();
         Board entity              = new Board();
         entity.setTitle(dto.getTitle());
@@ -60,6 +61,26 @@ public class BoardController {
         }
         return map;   
     }
+    //글 더미데이터 30개 생성
+    @PostMapping("/dummyData")
+    public HashMap<String,String>  dummyData(){
+        HashMap<String,String> map = new HashMap<>();
+        System.out.println("=========================BoardController.dummyData()"); 
+        
+        IntStream.range(0, 30).forEach(i -> {
+            Board entity              = new Board();
+            entity.setTitle("test"+i);
+            entity.setContent("test");
+            entity.setEmail("1@1");
+            entity.setRegDate(new Date());
+
+            repo.save(entity);
+        });
+        map.put("result","더미데이터 생성성공");  
+        return map;
+
+    }
+
     //글 목록 페이지
     @GetMapping("/boardList")
      public Iterable<Board>	findAll(){
