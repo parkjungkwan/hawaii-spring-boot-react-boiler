@@ -155,8 +155,8 @@ public class MemberController {
     }
 
      //회원관리 페이지(회원리스트)
-     @GetMapping("/memberList/{nowPage}")
-     public Page<Member> findAll(@PathVariable String nowPage){
+     @GetMapping("/memberList/{nowPage}/{search}")
+     public Page<Member> findAll(@PathVariable String nowPage, @PathVariable String search){
          System.out.println("=========================MemberController.findAll()");
          //페이지처리 안된코드
         //  Iterable<Member> entities = repo.findAll();
@@ -169,12 +169,13 @@ public class MemberController {
         //  System.out.println(list);
         //  return list;
         System.out.println("현재페이지 받아온 값 : "+nowPage);
+        System.out.println("검색 받아온 값 : "+search);
         //페이지처리
         if(nowPage.equals(null))
             nowPage = "0";
         Pageable pageable = PageRequest.of(Integer.parseInt(nowPage), 20, Direction.DESC,"id");
         Page<Member> result = repo.findAll(
-            repo.makePredicate(null, null), pageable);
+            repo.makePredicate(search), pageable);
         
         System.out.println("PAGE : "+result.getPageable());
         System.out.println("---------------------------------");

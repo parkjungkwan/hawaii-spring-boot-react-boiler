@@ -18,7 +18,7 @@ class MemberList extends React.Component{
         const {arr,nowPage} = this.state;
         //엑시오스 호출
         //처음엔 1페이지
-        axios.get(`http://localhost:9000/member/memberList/${nowPage}`)
+        axios.get(`http://localhost:9000/member/memberList/${nowPage}/null`)
         .then(res=>{
             console.log(res.data)
             console.log(res.data.content)
@@ -68,13 +68,7 @@ class MemberList extends React.Component{
         }
       }
 
-      const handleChange = name => e => {
-        e.preventDefault();
-        this.setState({
-          ...this.state, [name] : e.target.value
-        })
-        console.log(search)
-      }
+      
       //페이지 버튼 클릭
       const pageBtnClick = e => {
         e.preventDefault();
@@ -82,9 +76,9 @@ class MemberList extends React.Component{
         this.setState({
           ...this.state, nowPage : e.target.value
         })
-        
+        console.log(search);
         //엑시오스 호출
-        axios.get(`http://localhost:9000/member/memberList/${e.target.value}`)
+        axios.get(`http://localhost:9000/member/memberList/${e.target.value}/${search==''?'null':search}`)
         .then(res=>{
             console.log(res.data)
             console.log(res.data.content)
@@ -113,18 +107,51 @@ class MemberList extends React.Component{
         })
         
       }
+      //검색버튼 클릭
       const searchBtn = e => {
         e.preventDefault();
         // alert(search)
-        const headers = {
-          'Content-Type'  : 'application/json',
-          'Authorization' : 'JWT fefege..'
-        }
-        const data = {
-          search   : search
-        }
-      }
+        
+        // if(search == ''){
+        //   alert('검색어를 입력해주세요')
+        //   return false;
+        // }
+        axios.get(`http://localhost:9000/member/memberList/0/${search==''?'null':search}`)
+        .then(res=>{
+            console.log(res.data)
+            console.log(res.data.content)
 
+            let listMap = []
+            for (let i = 0; i < res.data.content.length; i++){
+                listMap.push({id:res.data.content[i].id, email:res.data.content[i].email, grade:res.data.content[i].grade, regdate:res.data.content[i].regDate});
+              }
+              console.log(listMap)
+              console.log(res.data.totalPages)
+
+            let buttonArr = []  
+            for (let i = 0; i < res.data.totalPages; i++){
+              buttonArr.push(i);
+            }
+            console.log(buttonArr)
+            this.setState({
+               arr : listMap,
+               totalPage : (res.data.totalPages)+1,
+               btnArr : buttonArr
+            })
+
+        })
+        .catch(e=>{
+            alert('ERROR');
+        })
+
+      }
+      const handleChange = name => e => {
+        e.preventDefault();
+        this.setState({
+          ...this.state, [name] : e.target.value
+        })
+        console.log(search)
+      }
         return(
             <div>
                 {localStorage.getItem('grade') == 'n' && <Redirect/>}

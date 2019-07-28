@@ -16,16 +16,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends CrudRepository<Member,Long>,QuerydslPredicateExecutor<Member>{
     
-    public default Predicate makePredicate(String type, String keyword){
+    public default Predicate makePredicate(String keyword){
         BooleanBuilder builder = new BooleanBuilder();
         QMember member = QMember.member;
         //id>0
         builder.and(member.id.gt(0));
+        if(!(keyword.equals("null"))&&(keyword!=null)){
+            builder.and(member.email.like("%"+keyword+"%"));
+        }
         return builder;
     }
-    
-
-    
+      
     public Optional<Member> findByEmailAndPwd(String email, String pwd);
     public Optional<Member> findByEmail(String email);
     
