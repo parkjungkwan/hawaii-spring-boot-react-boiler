@@ -45,11 +45,13 @@ class BoardList extends React.Component{
         const {arr,boardNum} = this.state;
         console.log(arr)
         console.log(boardNum)
+        //새글쓰기
         const boardNewPage = e => {
             e.preventDefault();
             history.push('/boardNew');
             window.location.reload();
           }
+          //글 상세보기
         const boardDetailPage = e => {
             e.preventDefault();
             console.log(e.target.value)

@@ -93,15 +93,13 @@ const useStyles = makeStyles(theme => ({
 export default function SingleLineGridList() {
   const classes = useStyles();
   const mainPageClick = e => {
-    alert(e.target.innerHTML);
-    if(e.target.innerHTML=='구글맵<span class="makeStyles-imageMarked-251"></span>'||
-    e.target.innerHTML=='<span class="MuiTypography-root makeStyles-imageTitle-234 MuiTypography-subtitle1 MuiTypography-colorInherit">구글맵<span class="makeStyles-imageMarked-235"></span></span>'
-    ){
-      // 마이페이지로 이동
+    // alert(e.target.innerHTML.split('구글맵')[1]);
+    if(e.target.innerHTML.split('구글맵')[1]){
+    //구글맵으로 이동
       history.push('/gMap2');
       window.location.reload();
     }else{
-      //보드로 이동
+            //보드로 이동
       history.push('/boardList');
       window.location.reload();
     }

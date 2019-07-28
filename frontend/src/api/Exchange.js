@@ -81,11 +81,12 @@ class Exchange extends Component{
       testArray.map((value) => currentState = value)
       
       console.log(currentState);
- 
+      let d = new Date();
+      
         return(
             <div>
                 <Container maxWidth="sm">
-                  <h5>환율</h5>
+                  <h5>{d.getFullYear()}년 {d.getMonth()+1}월 {d.getDate()}일 환율</h5>
                 <Table striped bordered hover size="sm" >
                 <thead>
                   <tr>

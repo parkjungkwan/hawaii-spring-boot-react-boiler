@@ -164,10 +164,10 @@ class Header extends Component{
                       {/* <Button color = "inherit">
                       <Link to = "/exchange">환율</Link>
                       </Button> */}
-                      <Button color = "inherit">
+                      {/* <Button color = "inherit"> */}
                       {/* <Link to = "/gMap">구글맵</Link> */}
-                      <Link to = "/gMap2">구글맵</Link>
-                      </Button>
+                      {/* <Link to = "/gMap2">구글맵</Link> */}
+                      {/* </Button> */}
                       <Button color = "inherit" onClick = {LogOut}>LogOut</Button>
                     </div>
                   ):
