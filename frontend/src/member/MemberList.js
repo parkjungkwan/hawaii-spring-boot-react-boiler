@@ -1,34 +1,46 @@
 import React from 'react'
 import axios from 'axios'
-import {Table, Button,Form,Col,Row} from 'react-bootstrap';
+import {Table, Button,Form,Col,Row,ButtonToolbar,ButtonGroup} from 'react-bootstrap';
 import {Redirect} from 'react-router-dom'
 class MemberList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
           arr : [],
-          search : ''
+          search : '',
+          nowPage : '0',
+          totalPage : '',
+          btnArr : []
         }
         this.key = 0;
       }
       componentDidMount() {
-          const {arr} = this.state;
+        const {arr,nowPage} = this.state;
         //엑시오스 호출
-        axios.get(`http://localhost:9000/member/memberList`)
+        //처음엔 1페이지
+        axios.get(`http://localhost:9000/member/memberList/${nowPage}`)
         .then(res=>{
             console.log(res.data)
+            console.log(res.data.content)
 
             let listMap = []
-            for (let i = 0; i < res.data.length; i++){
-                // 객체형으로 넣으면 안된다.
-                //푸시로 넣으면 안됨 수정하기.......
-                // alert();
-                listMap.push({id:res.data[i].id, email:res.data[i].email, grade:res.data[i].grade, regdate:res.data[i].regDate});
+            for (let i = 0; i < res.data.content.length; i++){
+                listMap.push({id:res.data.content[i].id, email:res.data.content[i].email, grade:res.data.content[i].grade, regdate:res.data.content[i].regDate});
               }
               console.log(listMap)
+              console.log(res.data.totalPages)
+
+            let buttonArr = []  
+            for (let i = 0; i < res.data.totalPages; i++){
+              buttonArr.push(i);
+            }
+            console.log(buttonArr)
             this.setState({
-               arr : listMap
+               arr : listMap,
+               totalPage : (res.data.totalPages)+1,
+               btnArr : buttonArr
             })
+
         })
         .catch(e=>{
             alert('ERROR');
@@ -38,7 +50,7 @@ class MemberList extends React.Component{
       }
       
     render(){
-       const {arr,search} = this.state;
+       const {arr,search,totalPage,btnArr,nowPage} = this.state;
       //  console.log(arr);
       //강퇴
        const removeMember = e => {
@@ -63,7 +75,44 @@ class MemberList extends React.Component{
         })
         console.log(search)
       }
+      //페이지 버튼 클릭
+      const pageBtnClick = e => {
+        e.preventDefault();
+        // alert(e.target.value)
+        this.setState({
+          ...this.state, nowPage : e.target.value
+        })
+        
+        //엑시오스 호출
+        axios.get(`http://localhost:9000/member/memberList/${e.target.value}`)
+        .then(res=>{
+            console.log(res.data)
+            console.log(res.data.content)
 
+            let listMap = []
+            for (let i = 0; i < res.data.content.length; i++){
+                listMap.push({id:res.data.content[i].id, email:res.data.content[i].email, grade:res.data.content[i].grade, regdate:res.data.content[i].regDate});
+              }
+              console.log(listMap)
+              console.log(res.data.totalPages)
+
+            let buttonArr = []  
+            for (let i = 0; i < res.data.totalPages; i++){
+              buttonArr.push(i);
+            }
+            console.log(buttonArr)
+            this.setState({
+               arr : listMap,
+               totalPage : (res.data.totalPages)+1,
+               btnArr : buttonArr
+            })
+
+        })
+        .catch(e=>{
+            alert('ERROR');
+        })
+        
+      }
       const searchBtn = e => {
         e.preventDefault();
         // alert(search)
@@ -101,6 +150,7 @@ class MemberList extends React.Component{
                   </tbody>
                 </Table>
                 <br/>
+                
                 <Form>
                   <Row className="justify-content-md-center">
                     <Col sm="2">
@@ -111,6 +161,18 @@ class MemberList extends React.Component{
                     </Col>
                   </Row>
                 </Form>
+                <br/>
+                <Row className="justify-content-md-center">
+                  <ButtonToolbar aria-label="Toolbar with button groups">
+                    <ButtonGroup className="mr-2" aria-label="First group">
+                      
+                      {btnArr.map((value, idx) => 
+                        <Button onClick={pageBtnClick} value={value}>{value+1}</Button>
+                      )}
+                      
+                    </ButtonGroup>
+                  </ButtonToolbar>
+                </Row>
             </div>
         );
     }

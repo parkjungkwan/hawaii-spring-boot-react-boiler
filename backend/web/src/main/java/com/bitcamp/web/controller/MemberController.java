@@ -18,6 +18,10 @@ import com.bitcamp.web.repositories.MemberRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,12 +55,12 @@ public class MemberController {
         return (long)fx.get();
     }
   
-    //회원 더미데이터 300개 생성
+    //회원 더미데이터 100개 생성
     @PostMapping("/dummyData")
     public HashMap<String,String>  dummyData(){
         HashMap<String,String> map = new HashMap<>();
         System.out.println("=========================MemberController.dummyData()");  
-        IntStream.range(0, 300).forEach(i -> {
+        IntStream.range(0, 100).forEach(i -> {
             Member entity              = new Member();
             entity.setName("test"+i);
             entity.setEmail(i+"@test");
@@ -150,19 +154,32 @@ public class MemberController {
         return map;
     }
 
-     //회원관리 페이지
-     @GetMapping("/memberList")
-     public Iterable<MemberDTO>	findAll(){
+     //회원관리 페이지(회원리스트)
+     @GetMapping("/memberList/{nowPage}")
+     public Page<Member> findAll(@PathVariable String nowPage){
          System.out.println("=========================MemberController.findAll()");
+         //페이지처리 안된코드
+        //  Iterable<Member> entities = repo.findAll();
+        //  List<MemberDTO> list      = new ArrayList<>();
          
-         Iterable<Member> entities = repo.findAll();
-         List<MemberDTO> list      = new ArrayList<>();
-         
-         for(Member m: entities){
-             MemberDTO mem = modelMapper.map(m, MemberDTO.class);
-             list.add(mem);
-         }
-         System.out.println(list);
-         return list; 
+        //  for(Member m: entities){
+        //      MemberDTO mem = modelMapper.map(m, MemberDTO.class);
+        //      list.add(mem);
+        //  }
+        //  System.out.println(list);
+        //  return list;
+        System.out.println("현재페이지 받아온 값 : "+nowPage);
+        //페이지처리
+        if(nowPage.equals(null))
+            nowPage = "0";
+        Pageable pageable = PageRequest.of(Integer.parseInt(nowPage), 20, Direction.DESC,"id");
+        Page<Member> result = repo.findAll(
+            repo.makePredicate(null, null), pageable);
+        
+        System.out.println("PAGE : "+result.getPageable());
+        System.out.println("---------------------------------");
+        result.getContent().forEach(member->System.out.println(""+member));
+
+        return result;
      }
 }
