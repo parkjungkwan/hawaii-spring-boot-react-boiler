@@ -1,0 +1,15 @@
+spring:
+    datasource:
+        url: jdbc:mariadb://tripmoahyunji.clfym1ix11li.ap-northeast-2.rds.amazonaws.com:3306/tripmoahyunji
+        driverClassName: org.mariadb.jdbc.Driver
+        username: tripmoahyunji
+        password: tripmoahyunji
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        hibernate:
+            ddl-auto: update
+server:
+    port: 9000
+logging:
+    level:
+      org.springframework.security: debug
