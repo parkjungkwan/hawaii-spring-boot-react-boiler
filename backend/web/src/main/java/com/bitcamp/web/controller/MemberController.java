@@ -195,12 +195,12 @@ public class MemberController {
      //회원관리 페이지(회원리스트)
      @GetMapping("/memberList/{nowPage}/{search}")
      public Page<Member> findAll(@PathVariable String nowPage, @PathVariable String search){
-         System.out.println("=========================MemberController.findAll()");
+        System.out.println("=========================MemberController.findAll()");
         System.out.println("현재페이지 받아온 값 : "+nowPage);
         System.out.println("검색 받아온 값 : "+search);
         //페이지처리
-        if(nowPage.equals(null))
-            nowPage = "0";
+        // if(nowPage.equals(null))
+        //     nowPage = "0";
         Pageable pageable = PageRequest.of(Integer.parseInt(nowPage), 20, Direction.DESC,"id");
         Page<Member> result = repo.findAll(
             repo.makePredicate(search), pageable);

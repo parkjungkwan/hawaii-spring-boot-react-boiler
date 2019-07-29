@@ -21,5 +21,6 @@ public class BoardDTO {
                     ,startDate
                     ,endDate
                     ,protect
-                    ,commentOrigin;
+                    ,commentOrigin
+                    ,fileUrl;
 }

@@ -41,8 +41,8 @@ public class Board implements Serializable{
     @Temporal(TemporalType.DATE)       private Date startDate;
     @Temporal(TemporalType.DATE)       private Date endDate;
     @Column(name = "protect")       private String protect;
-    @Column(name = "commentOrigin") private String commentOrigin;//게시글일시
-    
+    @Column(name = "commentOrigin") private String commentOrigin;//댓글게시글 여부
+    @Column(name = "fileUrl") private String fileUrl;
     // @CreationTimestamp
     // @Column(name = "signup_date", nullable = false)
     // private Timestamp signupDate;
@@ -60,7 +60,7 @@ public class Board implements Serializable{
     private Board(  String country,     String category,
                     String email, String title,     String content,
                     Date regDate,     Date startDate, Date endDate,
-                    String protect,     String commentOrigin){
+                    String protect,     String commentOrigin, String fileUrl){
         this.country        = country;
         this.category       = category;
         this.email          = email;
@@ -71,5 +71,6 @@ public class Board implements Serializable{
         this.endDate        = endDate;
         this.protect        = protect;
         this.commentOrigin  = commentOrigin;
+        this.fileUrl        = fileUrl;
     }
 }

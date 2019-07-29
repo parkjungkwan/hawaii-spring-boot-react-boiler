@@ -10,8 +10,8 @@ class BoardDetail extends React.Component{
             title : '',
             content : '',
             email : '',
-            regdate : ''
-            
+            regdate : '',
+            storeFileUrl : ''
         }
     }
     componentDidMount() {
@@ -26,7 +26,7 @@ class BoardDetail extends React.Component{
             content : res.data.content,
             email : res.data.email,
             regDate : res.data.regDate,
-            
+            storeFileUrl : res.data.fileUrl,
          }) 
         
     })
@@ -63,7 +63,9 @@ class BoardDetail extends React.Component{
             })
             window.location.reload();
         }
-        const {id, title, content, email, regDate, name} = this.state
+        
+        const {id, title, content, email, regDate, name,storeFileUrl} = this.state
+        const imageSrc = '/static/images/board/'+storeFileUrl
         return(
             <div>
                 {/* 보드디테일 */}
@@ -74,6 +76,8 @@ class BoardDetail extends React.Component{
                     <Card.Body>
                         <Card.Title>{title}</Card.Title>
                         <Card.Text>
+                        {storeFileUrl!=null&&(<img src={imageSrc} />) }
+                         <br/> 
                         {content}
                         </Card.Text>
                         <footer className="blockquote-footer">
