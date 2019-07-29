@@ -1,5 +1,5 @@
 import React  from 'react';
-import {makeStyles, Button, TextField, Grid} from '@material-ui/core'
+import {makeStyles, Button, TextField, Grid, Checkbox,FormControlLabel} from '@material-ui/core'
 import axios from 'axios'
 import { link } from 'fs';
 import { Router, Route, Link } from 'react-router-dom';
@@ -65,8 +65,15 @@ export default function Join(){
         pwd      : '',
         grade    : ''
     });
+    const [state, setState] = React.useState({
+        checkedA: false,
+        
+      });
     const handleChange = name => event => {
         setValues({ ...values, [name] : event.target.value });
+    };
+    const handleChangeC = name => event => {
+        setState({ ...state, [name]: event.target.checked });
     };
 
     //가입버튼 클릭
@@ -81,7 +88,7 @@ export default function Join(){
             name     : values.name,
             email    : values.email,
             pwd      : values.pwd,
-            grade    : 'n'
+            grade    : state.checkedA == false?'n':'y'
 
         }
         // alert("회원가입 버튼 클릭"+data.name);
@@ -142,6 +149,22 @@ export default function Join(){
                         margin       = "normal"
                         variant      = "outlined"
                     />
+                    <div>
+                    
+                        <Checkbox
+                            checked={state.checkedA}
+                            onChange={handleChangeC('checkedA')}
+                            value="checkedA"
+                            inputProps={{
+                            'aria-label': 'primary checkbox',
+                            }}
+                        />관리자로 가입
+                    
+                    
+                
+                        
+                    </div>
+                    
                     <div>
                         <Button variant = "outlined" color = "secondary" className = {classes.button} onClick = {joinBtn}>
                             가입
