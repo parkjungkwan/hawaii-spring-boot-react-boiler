@@ -156,7 +156,7 @@ export default function MypageUpdate() {
       var strArray = res.data.result.split()
       //state에 받아온 경로저장
       setValues({ ...values, storeFileUrl: res.data.result});
-      alert(`${res.data.result}`);
+      alert(`수정성공`);
     })
     .catch(e => {
      
