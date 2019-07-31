@@ -99,7 +99,7 @@ class BoardList extends React.Component{
             for (let i = 0; i < res.data.content.length; i++){
             cards.push(i+1)
             // cards.map()
-            listMap.push({id:res.data.content[i].id, title:res.data.content[i].title, content:res.data.content[i].content, email:res.data.content[i].email, regdate:res.data.content[i].regDate,storeFileUrl:res.data.content[i].fileUrl});
+            listMap.push({id:res.data.content[i].id, title:res.data.content[i].title, content:res.data.content[i].content, email:res.data.content[i].email, regdate:res.data.content[i].regDate,storeFileUrl:res.data.content[i].storeFileUrl});
                 
             }
               console.log(listMap)
@@ -137,7 +137,7 @@ class BoardList extends React.Component{
             for (let i = 0; i < res.data.content.length; i++){
             cards.push(i+1)
             // cards.map()
-            listMap.push({id:res.data.content[i].id, title:res.data.content[i].title, content:res.data.content[i].content, email:res.data.content[i].email, regdate:res.data.content[i].regDate,storeFileUrl:res.data.content[i].fileUrl});
+            listMap.push({id:res.data.content[i].id, title:res.data.content[i].title, content:res.data.content[i].content, email:res.data.content[i].email, regdate:res.data.content[i].regDate,storeFileUrl:res.data.content[i].storeFileUrl});
                 
             }
               console.log(listMap)
@@ -166,7 +166,8 @@ class BoardList extends React.Component{
         })
         console.log(search)
       }
-      const imageSrc = '/static/images/board/'+this.state.storeFileUrl
+      const imageSrc = '/static/images/board/'
+      console.log(arr)
         return(
             <div>
             <br/>
@@ -175,7 +176,8 @@ class BoardList extends React.Component{
             {arr.map((value,idx)=>
             <Col sm>
                 <Card style={{ width: '18rem' }}>
-                    <Card.Img variant="top" src="/static/images/avatar/jk.jpg" />
+                  {value.storeFileUrl!==null && <Card.Img variant="top" src={imageSrc+value.storeFileUrl} />}
+                  {value.storeFileUrl===null && <Card.Img variant="top" src={imageSrc+"noimg.jpg"} />}  
                     
                     <Card.Body>
                         <Card.Title>{value.title}</Card.Title>

@@ -14,7 +14,7 @@ class BoardUpdate extends React.Component{
             file: '',
             imagePreviewUrl: '',
             //로케이셔네 담아서 받아오기
-            storeFileUrl : ''
+            storeFileUrl : this.props.location.state.storeFileUrl
         }
     }
     
@@ -68,15 +68,20 @@ class BoardUpdate extends React.Component{
       }
     
     render(){
+      console.log(this.state.storeFileUrl)
         let {imagePreviewUrl} = this.state;
+        const {id, title, content, email,storeFileUrl} = this.state
         let $imagePreview = null;
-        if (imagePreviewUrl) {
+        if (storeFileUrl&&(!imagePreviewUrl)) {
+          $imagePreview = (<img src={'/static/images/board/'+storeFileUrl} />);
+        }else if(imagePreviewUrl){
           $imagePreview = (<img src={imagePreviewUrl} />);
-        } else {
+        }
+         else {
           $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
         }
 
-        const {id, title, content, email,storeFileUrl} = this.state
+        
         const updateBtn = e => {
             e.preventDefault();
             // alert('글수정')
